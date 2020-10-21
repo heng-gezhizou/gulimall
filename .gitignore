@@ -16,6 +16,9 @@ buildNumber.properties
 **/.mvn
 **/target/
 **/.gitignore
+**/src/main/resources/src/views/modules
 
 # 根模块下的文件
 .idea
+renren-fast
+renren-generator
