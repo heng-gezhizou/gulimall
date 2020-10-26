@@ -27,7 +27,7 @@ import com.adtec.common.utils.R;
  * @date 2020-09-15 21:42:21
  */
 @RefreshScope//动态刷新远程nacos中的配置列表的数据
-@RestController//hello
+@RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
 
