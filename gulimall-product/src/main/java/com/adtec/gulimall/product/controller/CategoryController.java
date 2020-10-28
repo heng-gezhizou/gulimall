@@ -1,6 +1,7 @@
 package com.adtec.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,11 @@ public class CategoryController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = categoryService.queryPage(params);
+    @RequestMapping("/list/tree")
+    public R list(){
+        List<CategoryEntity> categoryEntity = categoryService.listTree();
 
-        return R.ok().put("page", page);
+        return R.ok().put("data", categoryEntity);
     }
 
 
