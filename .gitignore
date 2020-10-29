@@ -20,5 +20,8 @@ buildNumber.properties
 
 # 根模块下的文件
 .idea
-renren-fast
-renren-generator
+renren-generator/LICENSE
+renren-generator/README.md
+
+renren-fast/LICENSE
+renren-fast/README.md
