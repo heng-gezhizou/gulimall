@@ -35,7 +35,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         //查出所有分类
         List<CategoryEntity> list = baseMapper.selectList(null);
-
+        System.out.println(list);
         //组装成父子的树形结构
         //查询出所有的一级分类
         List<CategoryEntity> level1Menu = list.stream().filter((categoryEntity) -> {
@@ -48,6 +48,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }).collect(Collectors.toList());
 
         return level1Menu;
+    }
+
+    @Override
+    public void removeMenuByIds(List<Long> asList) {
+        //TODO 检查要删除的菜单是否被别的地方引用
+        baseMapper.deleteBatchIds(asList);
     }
 
     private List<CategoryEntity> getMenuChildren(CategoryEntity entity,List<CategoryEntity> root){

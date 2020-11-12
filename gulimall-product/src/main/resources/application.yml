@@ -8,13 +8,22 @@ spring:
     nacos:
       discovery:
         server-addr: 39.102.58.201:8848
+   alicloud:
+     access-key: LTAI4G2K6gKUYNfJ3nUyFGGo
+     secret-key: FIE2OS4ZMZg7OFkYXmi7med6tIem49
+     oss:
+       endpoint: oss-cn-beijing.aliyuncs.com
 
 mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+      logic-delete-value: 0 #逻辑已删除
+      logic-not-delete-value: 1 #逻辑未删除
+      logic-delete-field: showStatus
   mapper-locations: classpath:/mapper/**/*.xml
-
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 server:
   port: 9999
