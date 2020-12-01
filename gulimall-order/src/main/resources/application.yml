@@ -12,3 +12,5 @@ mybatis-plus:
 
 
 
+server:
+  port: 4000

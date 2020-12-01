@@ -2,9 +2,6 @@ package com.adtec.gulimall.product;
 
 import com.adtec.gulimall.product.entity.BrandEntity;
 import com.adtec.gulimall.product.service.BrandService;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.OSSClientBuilder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,27 +20,20 @@ public class GulimallProductApplicationTests {
 
     @Autowired
     private BrandService brandService;
-
-    @Resource
-    private OSSClient ossClient;
+//
+//    @Resource
+//    private OSSClient ossClient;
 
     @Test
     public void testOss() throws FileNotFoundException {
-        // Endpoint以杭州为例，其它Region请按实际情况填写。
-        String endpoint = "oss-cn-beijing.aliyuncs.com";
-// 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建。
-        String accessKeyId = "LTAI4G2K6gKUYNfJ3nUyFGGo";
-        String accessKeySecret = "FIE2OS4ZMZg7OFkYXmi7med6tIem49";
 
-// 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
-// 上传文件流。
-        InputStream inputStream = new FileInputStream("C:\\Users\\hgzz\\Pictures\\guli\\1.jpg");
-        ossClient.putObject("gulimall-hgzz", "1.jpg", inputStream);
-
-// 关闭OSSClient。
-        ossClient.shutdown();
+//// 上传文件流。
+//        InputStream inputStream = new FileInputStream("C:\\Users\\hgzz\\Pictures\\guli\\1.jpg");
+//        ossClient.putObject("gulimall-hgzz", "3.jpg", inputStream);
+//
+//// 关闭OSSClient。
+//        ossClient.shutdown();
+//        System.out.println("上传成功");
     }
 
     @Test

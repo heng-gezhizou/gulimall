@@ -12,6 +12,13 @@ spring:
           predicates:
             - Query=url,baidu
 
+        - id: route_third_party
+          uri: lb://gulimall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>/?.*),/$\{segment}
+
         - id: route_product
           uri: lb://gulimall-product
           predicates:
