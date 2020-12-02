@@ -14,7 +14,6 @@ spring:
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
 
-
 mybatis-plus:
   global-config:
     db-config:
@@ -23,6 +22,7 @@ mybatis-plus:
       logic-not-delete-value: 1 #逻辑未删除
       logic-delete-field: showStatus
   mapper-locations: classpath:/mapper/**/*.xml
+  #mybatis-plus日志,在控制台打印sql语句
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

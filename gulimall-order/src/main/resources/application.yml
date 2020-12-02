@@ -4,6 +4,12 @@ spring:
     password: root
     url: jdbc:mysql://39.102.58.201:3306/gulimall-oms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    alicloud:
+      access-key: LTAI4G2K6gKUYNfJ3nUyFGGo
+      secret-key: FIE2OS4ZMZg7OFkYXmi7med6tIem49
+      oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
 mybatis-plus:
   global-config:
     db-config:
