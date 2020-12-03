@@ -3,6 +3,12 @@ package com.adtec.gulimall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.adtec.gulimall.product.entity.AttrAttrgroupRelationEntity;
+import com.adtec.gulimall.product.entity.AttrGroupEntity;
+import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
+import com.adtec.gulimall.product.service.AttrGroupService;
+import com.adtec.gulimall.product.vo.AttrEntityVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +36,8 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
     /**
      * 列表
      */
@@ -55,9 +63,8 @@ public class AttrController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody AttrEntity attr){
-		attrService.save(attr);
-
+    public R save(@RequestBody AttrEntityVO attrEntityVO){
+		attrService.saveAttr(attrEntityVO);
         return R.ok();
     }
 

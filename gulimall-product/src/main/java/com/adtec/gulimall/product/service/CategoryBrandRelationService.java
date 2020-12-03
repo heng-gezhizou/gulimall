@@ -1,5 +1,7 @@
 package com.adtec.gulimall.product.service;
 
+import com.adtec.gulimall.product.entity.BrandEntity;
+import com.adtec.gulimall.product.entity.CategoryEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
 import com.adtec.gulimall.product.entity.CategoryBrandRelationEntity;
@@ -16,5 +18,11 @@ import java.util.Map;
 public interface CategoryBrandRelationService extends IService<CategoryBrandRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveDetail(CategoryBrandRelationEntity categoryBrandRelation);
+
+    void updateBrand(BrandEntity brand);
+
+    void updateCategory(CategoryEntity category);
 }
 

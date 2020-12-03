@@ -3,7 +3,9 @@ package com.adtec.gulimall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.adtec.gulimall.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,8 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
+    @Autowired
+    private CategoryService categoryService;
     /**
      * 列表
      */
@@ -44,11 +48,14 @@ public class AttrGroupController {
 
     /**
      * 信息
+     * param: attrGroupId(为attrGroup表的id)
      */
     @RequestMapping("/info/{attrGroupId}")
     public R info(@PathVariable("attrGroupId") Long attrGroupId){
 		AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
-
+		Long catelogId = attrGroup.getCatelogId();
+        Long[] path = categoryService.getCatelogPathById(catelogId);
+        attrGroup.setCatelogPath(path);
         return R.ok().put("attrGroup", attrGroup);
     }
 

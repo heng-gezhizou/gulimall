@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.adtec.common.valid.AddGroup;
+import com.adtec.gulimall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,9 @@ import javax.validation.Valid;
 public class BrandController {
     @Autowired
     private BrandService brandService;
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     /**
      * 列表
@@ -82,10 +87,11 @@ public class BrandController {
     /**
      * 修改
      */
+    @Transactional
     @RequestMapping("/update")
     public R update(@RequestBody BrandEntity brand){
 		brandService.updateById(brand);
-
+        categoryBrandRelationService.updateBrand(brand);
         return R.ok();
     }
 

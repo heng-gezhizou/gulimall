@@ -2,7 +2,9 @@ package com.adtec.gulimall.product;
 
 import com.adtec.gulimall.product.entity.BrandEntity;
 import com.adtec.gulimall.product.service.BrandService;
+import com.adtec.gulimall.product.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +15,26 @@ import javax.annotation.Resource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GulimallProductApplicationTests {
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private BrandService brandService;
 //
 //    @Resource
 //    private OSSClient ossClient;
+    @Test
+    public void testCategoryService(){
+        Long[] catelogPath = categoryService.getCatelogPathById(225L);
+        log.info("完整路径：{}", Arrays.asList(catelogPath));
+    }
 
     @Test
     public void testOss() throws FileNotFoundException {

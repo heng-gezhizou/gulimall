@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.adtec.gulimall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,10 @@ import com.adtec.common.utils.R;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
+
 
     /**
      * 列表
@@ -68,17 +74,17 @@ public class CategoryController {
     @RequestMapping("/save")
     public R save(@RequestBody CategoryEntity category){
 		categoryService.save(category);
-
         return R.ok();
     }
 
     /**
      * 修改
      */
+    @Transactional
     @RequestMapping("/update")
     public R update(@RequestBody CategoryEntity category){
 		categoryService.updateById(category);
-
+        categoryBrandRelationService.updateCategory(category);
         return R.ok();
     }
 
