@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.adtec.gulimall</groupId>
-    <artifactId>third-party</artifactId>
+    <artifactId>gulimall-third-party</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>third-party</name>
+    <name>gulimall-third-party</name>
     <description>第三方服务</description>
 
     <properties>
