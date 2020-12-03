@@ -39,11 +39,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //组装成父子的树形结构
         //查询出所有的一级分类
         List<CategoryEntity> level1Menu = list.stream().filter((categoryEntity) -> {
+            //这里需要为true才能不被过滤
             return categoryEntity.getParentCid() == 0;
         }).map((menu)->{
+            //通过递归获取子数据
             menu.setChildren(getMenuChildren(menu,list));
             return menu;
         }).sorted((menu1,menu2)->{
+            //排序
             return (menu1.getSort()==null?0:menu1.getSort()) - (menu2.getSort()==null?0:menu2.getSort());
         }).collect(Collectors.toList());
 
