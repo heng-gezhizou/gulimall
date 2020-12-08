@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.adtec.gulimall</groupId>
-    <artifactId>gateway</artifactId>
+    <artifactId>gulimall-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gulimall-gateway</name>
     <description>谷粒商城-网关</description>
