@@ -8,13 +8,10 @@ import com.adtec.gulimall.product.entity.AttrGroupEntity;
 import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
 import com.adtec.gulimall.product.service.AttrGroupService;
 import com.adtec.gulimall.product.vo.AttrEntityVO;
+import com.adtec.gulimall.product.vo.AttrRespVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.adtec.gulimall.product.entity.AttrEntity;
 import com.adtec.gulimall.product.service.AttrService;
@@ -38,6 +35,20 @@ public class AttrController {
 
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    @GetMapping("/{attrType}/list/{catelogId}")
+    public R queryAttr(@RequestParam Map<String,Object> params,@PathVariable("catelogId") Long catelogId,
+                       @PathVariable("attrType") String attrType){
+        PageUtils pageUtils = attrService.queryAttr(params,catelogId,attrType);
+        return R.ok().put("page",pageUtils);
+    }
+
+    @GetMapping("/info/{attrId}")
+    public R queryAttrInfo(@PathVariable("attrId") Long attrId){
+        AttrRespVo attr = attrService.queryAttrInfo(attrId);
+        return R.ok().put("attr",attr);
+    }
+
     /**
      * 列表
      */
@@ -72,9 +83,9 @@ public class AttrController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody AttrEntity attr){
-		attrService.updateById(attr);
-
+    public R update(@RequestBody AttrEntityVO attr){
+//		attrService.updateById(attr);
+        attrService.updateAttr(attr);
         return R.ok();
     }
 

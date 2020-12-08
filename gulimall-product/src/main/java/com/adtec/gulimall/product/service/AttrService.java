@@ -1,6 +1,7 @@
 package com.adtec.gulimall.product.service;
 
 import com.adtec.gulimall.product.vo.AttrEntityVO;
+import com.adtec.gulimall.product.vo.AttrRespVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
 import com.adtec.gulimall.product.entity.AttrEntity;
@@ -19,5 +20,11 @@ public interface AttrService extends IService<AttrEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void saveAttr(AttrEntityVO attrEntityVO);
+
+    PageUtils queryAttr(Map<String, Object> params, Long catelogId, String attrType);
+
+    AttrRespVo queryAttrInfo(Long attrId);
+
+    void updateAttr(AttrEntityVO attr);
 }
 
