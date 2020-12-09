@@ -1,16 +1,17 @@
 package com.adtec.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.adtec.gulimall.product.entity.AttrEntity;
+import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
 import com.adtec.gulimall.product.service.CategoryService;
+import com.adtec.gulimall.product.vo.AttrRelationVo;
+import com.adtec.gulimall.product.vo.AttrRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.adtec.gulimall.product.entity.AttrGroupEntity;
 import com.adtec.gulimall.product.service.AttrGroupService;
@@ -34,6 +35,30 @@ public class AttrGroupController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    /**
+     * created by hgzz
+     */
+    //      /product/attrgroup/attr/relation/delete
+    @PostMapping("/attr/relation/delete")
+    public R deleteAttrRelation(@RequestBody AttrRelationVo[] attrRelationVos){
+        attrAttrgroupRelationService.deleteRelation(attrRelationVos);
+        return R.ok();
+    }
+
+    /**
+     * created by hgzz
+     */
+    //    /product/attrgroup/{attrgroupId}/attr/relation
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrList(@PathVariable("attrgroupId") Long attrgroupId){
+        List<AttrEntity> list = attrGroupService.getAttrList(attrgroupId);
+        return R.ok().put("data",list);
+    }
+
     /**
      * 列表
      */
@@ -44,7 +69,6 @@ public class AttrGroupController {
 
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息
