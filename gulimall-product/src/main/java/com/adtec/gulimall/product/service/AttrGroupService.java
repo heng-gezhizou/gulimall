@@ -23,7 +23,5 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     List<AttrEntity> getAttrList(Long attrgroupId);
 
-    //获取未与当前分组关联的规格参数
-    PageUtils getNoRelationAttr(Long attrgroupId, Map<String, Object> params);
 }
 

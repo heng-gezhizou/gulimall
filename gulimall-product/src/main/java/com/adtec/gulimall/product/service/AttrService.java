@@ -26,5 +26,8 @@ public interface AttrService extends IService<AttrEntity> {
     AttrRespVo queryAttrInfo(Long attrId);
 
     void updateAttr(AttrEntityVO attr);
+
+    //获取未与当前分组关联的规格参数
+    PageUtils getNoRelationAttr(Long attrgroupId, Map<String, Object> params);
 }
 

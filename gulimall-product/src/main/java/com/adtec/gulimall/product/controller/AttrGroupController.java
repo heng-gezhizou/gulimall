@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.adtec.gulimall.product.entity.AttrEntity;
 import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
+import com.adtec.gulimall.product.service.AttrService;
 import com.adtec.gulimall.product.service.CategoryService;
 import com.adtec.gulimall.product.vo.AttrRelationVo;
 import com.adtec.gulimall.product.vo.AttrRespVo;
@@ -30,6 +31,10 @@ import com.adtec.common.utils.R;
 @RestController
 @RequestMapping("product/attrgroup")
 public class AttrGroupController {
+
+    @Autowired
+    private AttrService attrService;
+
     @Autowired
     private AttrGroupService attrGroupService;
 
@@ -65,8 +70,9 @@ public class AttrGroupController {
 //    /product/attrgroup/{attrgroupId}/noattr/relation
     @GetMapping("/{attrgroupId}/noattr/relation")
     public R getNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
-                           @RequestBody Map<String,Object> params){
-        PageUtils page = attrGroupService.getNoRelationAttr(attrgroupId,params);
+                           @RequestParam Map<String,Object> params){
+        System.out.println("////////////////////");
+        PageUtils page = attrService.getNoRelationAttr(attrgroupId,params);
         return R.ok().put("page",page);
     }
 

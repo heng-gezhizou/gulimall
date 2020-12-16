@@ -70,38 +70,12 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         List<Long> collect = entities.stream().map((item) -> {
             return item.getAttrId();
         }).collect(Collectors.toList());
-
-        List<AttrEntity> attrEntities = attrDao.selectBatchIds(collect);
-        return attrEntities;
-    }
-
-    @Override
-    public PageUtils getNoRelationAttr(Long attrgroupId, Map<String, Object> params) {
-        //获取当前属性分组下的三级分类id
-        AttrGroupEntity attrGroupEntity = this.baseMapper.selectById(attrgroupId);
-        Long catelogId = attrGroupEntity.getCatelogId();
-
-        //通过三级分类id查询该三级分类下所有的属性分组
-        List<AttrGroupEntity> catelogIdList = this.baseMapper.selectList(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
-        List<Long> attrGroupIdList = catelogIdList.stream().map((item -> {
-            return item.getAttrGroupId();
-        })).collect(Collectors.toList());
-        List<AttrAttrgroupRelationEntity> entities = relationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().in("attr_group_id",attrGroupIdList));
-
-        List<Long> collect = entities.stream().map(item -> {
-            return item.getAttrId();
-        }).collect(Collectors.toList());
-        //通过三级分类查询该分类下有多少基本属性
-        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId).eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
-        if (collect != null && collect.size() > 0){
-            wrapper.notIn("attr_id",collect);
+        if(collect != null && collect.size() > 0){
+            List<AttrEntity> attrEntities = attrDao.selectBatchIds(collect);
+            return attrEntities;
         }
-        List<AttrEntity> list = attrDao.selectList(wrapper);
-        String key = (String) params.get("key");
-
-
-
-
         return null;
     }
+
+
 }
