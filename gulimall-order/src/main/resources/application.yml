@@ -6,8 +6,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     alicloud:
-      access-key: @hgzzLTAI4G2K6gKUYNfJ3nUyFGGo@hgzz
-      secret-key: @hgzzFIE2OS4ZMZg7OFkYXmi7med6tIem49@hgzz
+      access-key:
+      secret-key:
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
 mybatis-plus:
