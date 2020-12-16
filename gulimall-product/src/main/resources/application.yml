@@ -9,8 +9,8 @@ spring:
       discovery:
         server-addr: 39.102.58.201:8848
     alicloud:
-      access-key: LTAI4G2K6gKUYNfJ3nUyFGGo
-      secret-key: FIE2OS4ZMZg7OFkYXmi7med6tIem49
+      access-key: @hgzzLTAI4G2K6gKUYNfJ3nUyFGGo@hgzz
+      secret-key: @hgzzFIE2OS4ZMZg7OFkYXmi7med6tIem49@hgzz
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
 
