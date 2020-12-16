@@ -1,7 +1,9 @@
 package com.adtec.gulimall.product.dao;
 
 import com.adtec.gulimall.product.entity.AttrAttrgroupRelationEntity;
+import com.adtec.gulimall.product.entity.AttrEntity;
 import com.adtec.gulimall.product.vo.AttrRelationVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,4 +21,5 @@ import java.util.List;
 public interface AttrAttrgroupRelationDao extends BaseMapper<AttrAttrgroupRelationEntity> {
 
     void deleteRelationBatch(@Param("attrRelation") List<AttrAttrgroupRelationEntity> attrRelation);
+
 }

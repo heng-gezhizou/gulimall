@@ -54,9 +54,20 @@ public class AttrGroupController {
      */
     //    /product/attrgroup/{attrgroupId}/attr/relation
     @GetMapping("/{attrgroupId}/attr/relation")
-    public R attrList(@PathVariable("attrgroupId") Long attrgroupId){
+    public R getRelation(@PathVariable("attrgroupId") Long attrgroupId){
         List<AttrEntity> list = attrGroupService.getAttrList(attrgroupId);
         return R.ok().put("data",list);
+    }
+
+    /**
+     * created by hgzz
+     */
+//    /product/attrgroup/{attrgroupId}/noattr/relation
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R getNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
+                           @RequestBody Map<String,Object> params){
+        PageUtils page = attrGroupService.getNoRelationAttr(attrgroupId,params);
+        return R.ok().put("page",page);
     }
 
     /**
