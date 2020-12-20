@@ -47,4 +47,15 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
         attrAttrgroupRelationDao.deleteRelationBatch(attrRelation);
     }
 
+    //添加商品属性与属性分组关系
+    @Override
+    public void addAttrRelation(List<AttrRelationVo> attrRelationVos) {
+        List<AttrAttrgroupRelationEntity> collect = attrRelationVos.stream().map((item) -> {
+            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(item, attrAttrgroupRelationEntity);
+            return attrAttrgroupRelationEntity;
+        }).collect(Collectors.toList());
+        this.saveBatch(collect);
+    }
+
 }

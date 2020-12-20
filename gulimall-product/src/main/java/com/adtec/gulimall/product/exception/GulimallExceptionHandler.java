@@ -28,7 +28,8 @@ public class GulimallExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public R globalExceptionHandler(Exception e){
-        log.error("10000",e.getClass(),e.getMessage());
+//        log.error("10000",e.getClass(),e.getMessage());
+        log.error("错误",e);
         return R.error(BizCodeEnum.UNKNOWN_EXCEPTION.getCode(),BizCodeEnum.UNKNOWN_EXCEPTION.getMsg());
     }
 

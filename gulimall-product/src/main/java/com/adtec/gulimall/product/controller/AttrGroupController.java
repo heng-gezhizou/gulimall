@@ -47,6 +47,17 @@ public class AttrGroupController {
     /**
      * created by hgzz
      */
+//    /product/attrgroup/attr/relation
+    @PostMapping("/attr/relation")
+    public R AddAttrRelation(@RequestBody AttrRelationVo[] attrRelationVo){
+        List<AttrRelationVo> attrRelationVos = Arrays.asList(attrRelationVo);
+        attrAttrgroupRelationService.addAttrRelation(attrRelationVos);
+        return R.ok();
+    }
+
+    /**
+     * created by hgzz
+     */
     //      /product/attrgroup/attr/relation/delete
     @PostMapping("/attr/relation/delete")
     public R deleteAttrRelation(@RequestBody AttrRelationVo[] attrRelationVos){
@@ -71,7 +82,6 @@ public class AttrGroupController {
     @GetMapping("/{attrgroupId}/noattr/relation")
     public R getNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
                            @RequestParam Map<String,Object> params){
-        System.out.println("////////////////////");
         PageUtils page = attrService.getNoRelationAttr(attrgroupId,params);
         return R.ok().put("page",page);
     }

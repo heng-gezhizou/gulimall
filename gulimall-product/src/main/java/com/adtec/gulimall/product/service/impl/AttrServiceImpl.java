@@ -68,7 +68,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attrEntityVO,attrEntity);
         //1.保存基本关系
         this.save(attrEntity);
-        if(attrEntityVO.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
+        if(attrEntityVO.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attrEntityVO.getAttrGroupId() != null){
             //2.保存分组关联关系
             AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
             attrAttrgroupRelationEntity.setAttrId(attrEntity.getAttrId());
@@ -178,7 +178,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     public PageUtils getNoRelationAttr(Long attrgroupId, Map<String, Object> params) {
-        System.out.println("????????????????????");
         //获取当前属性分组下的三级分类id
         AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupId);
         Long catelogId = attrGroupEntity.getCatelogId();
