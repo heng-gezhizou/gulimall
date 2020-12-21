@@ -5,6 +5,9 @@ import com.adtec.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.adtec.gulimall.product.dao.AttrDao;
 import com.adtec.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.adtec.gulimall.product.entity.AttrEntity;
+import com.adtec.gulimall.product.service.AttrService;
+import com.adtec.gulimall.product.vo.AttrGroupWithAttrsVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,9 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Resource
     private AttrDao attrDao;
+
+    @Resource
+    private AttrService attrService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -75,6 +81,19 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return attrEntities;
         }
         return null;
+    }
+
+    @Override
+    public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrs(Long catelogId) {
+        List<AttrGroupEntity> list = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+        List<AttrGroupWithAttrsVo> collect = list.stream().map(item -> {
+            AttrGroupWithAttrsVo attrGroupWithAttrsVo = new AttrGroupWithAttrsVo();
+            BeanUtils.copyProperties(attrGroupWithAttrsVo, item);
+            List<AttrEntity> attrList = this.getAttrList(item.getAttrGroupId());
+            attrGroupWithAttrsVo.setAttrs(attrList);
+            return attrGroupWithAttrsVo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
 

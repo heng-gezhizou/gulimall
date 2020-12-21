@@ -8,6 +8,7 @@ import com.adtec.gulimall.product.entity.AttrEntity;
 import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
 import com.adtec.gulimall.product.service.AttrService;
 import com.adtec.gulimall.product.service.CategoryService;
+import com.adtec.gulimall.product.vo.AttrGroupWithAttrsVo;
 import com.adtec.gulimall.product.vo.AttrRelationVo;
 import com.adtec.gulimall.product.vo.AttrRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +45,23 @@ public class AttrGroupController {
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
+
+    /**
+     * created by hgzz
+     *  /product/attrgroup/{catelogId}/withattr
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId){
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrs(catelogId);
+        return R.ok().put("data",vos);
+    }
+
     /**
      * created by hgzz
      */
 //    /product/attrgroup/attr/relation
     @PostMapping("/attr/relation")
-    public R AddAttrRelation(@RequestBody AttrRelationVo[] attrRelationVo){
+    public R addAttrRelation(@RequestBody AttrRelationVo[] attrRelationVo){
         List<AttrRelationVo> attrRelationVos = Arrays.asList(attrRelationVo);
         attrAttrgroupRelationService.addAttrRelation(attrRelationVos);
         return R.ok();

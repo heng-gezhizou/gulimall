@@ -1,6 +1,7 @@
 package com.adtec.gulimall.product.service;
 
 import com.adtec.gulimall.product.entity.AttrEntity;
+import com.adtec.gulimall.product.vo.AttrGroupWithAttrsVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
 import com.adtec.gulimall.product.entity.AttrGroupEntity;
@@ -23,5 +24,6 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     List<AttrEntity> getAttrList(Long attrgroupId);
 
+    List<AttrGroupWithAttrsVo> getAttrGroupWithAttrs(Long catelogId);
 }
 
