@@ -3,6 +3,8 @@ package com.adtec.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.adtec.common.to.SpuBoundTo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

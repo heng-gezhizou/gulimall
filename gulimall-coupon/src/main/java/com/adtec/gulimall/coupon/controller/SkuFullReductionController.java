@@ -3,6 +3,7 @@ package com.adtec.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.adtec.common.to.SkuFullReductionTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,13 @@ import com.adtec.common.utils.R;
 public class SkuFullReductionController {
     @Autowired
     private SkuFullReductionService skuFullReductionService;
+
+    @RequestMapping("/saveinfo")
+    public R saveInfo(@RequestBody SkuFullReductionTo skuFullReductionTo){
+        skuFullReductionService.saveReduction(skuFullReductionTo);
+
+        return R.ok();
+    }
 
     /**
      * 列表
