@@ -8,6 +8,7 @@ import com.adtec.gulimall.coupon.service.SkuLadderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,13 +52,19 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
         skuLadderEntity.setAddOther(skuFullReductionTo.getCountStatus());
         BeanUtils.copyProperties(skuFullReductionTo,skuLadderEntity);
-        skuLadderService.save(skuLadderEntity);
+        if(skuFullReductionTo.getFullCount() > 0){
+            skuLadderService.save(skuLadderEntity);
+        }
+
 
         //sms_sku_full_reduction
         SkuFullReductionEntity skuFullReductionEntity = new SkuFullReductionEntity();
         BeanUtils.copyProperties(skuFullReductionTo,skuFullReductionEntity);
 //        skuFullReductionEntity.setAddOther(skuFullReductionTo.getCountStatus());
-        this.save(skuFullReductionEntity);
+        if(skuFullReductionEntity.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+            this.save(skuFullReductionEntity);
+        }
+
 
 //        sms_member_price
         List<MemberPriceEntity> collect = skuFullReductionTo.getMemberPrice().stream().map(item -> {
@@ -68,6 +75,8 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
             memberPriceEntity.setSkuId(skuFullReductionTo.getSkuId());
             memberPriceEntity.setAddOther(1);
             return memberPriceEntity;
+        }).filter(item->{
+            return item.getMemberPrice().compareTo(new BigDecimal("0")) == 1;
         }).collect(Collectors.toList());
         memberPriceService.saveBatch(collect);
     }

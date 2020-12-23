@@ -88,7 +88,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         List<AttrGroupEntity> list = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
         List<AttrGroupWithAttrsVo> collect = list.stream().map(item -> {
             AttrGroupWithAttrsVo attrGroupWithAttrsVo = new AttrGroupWithAttrsVo();
-            BeanUtils.copyProperties(attrGroupWithAttrsVo, item);
+            BeanUtils.copyProperties(item, attrGroupWithAttrsVo);
             List<AttrEntity> attrList = this.getAttrList(item.getAttrGroupId());
             attrGroupWithAttrsVo.setAttrs(attrList);
             return attrGroupWithAttrsVo;

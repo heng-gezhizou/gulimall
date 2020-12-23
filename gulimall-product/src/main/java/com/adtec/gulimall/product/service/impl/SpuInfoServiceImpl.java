@@ -7,9 +7,11 @@ import com.adtec.gulimall.product.entity.*;
 import com.adtec.gulimall.product.feign.CouponFeignService;
 import com.adtec.gulimall.product.service.*;
 import com.adtec.gulimall.product.vo.savo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +134,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                         skuImagesEntity.setSkuId(skuId);
 
                         return skuImagesEntity;
+                    }).filter(item->{
+                        //stream流的filter如果返回true则不过滤,如果返回false则过滤
+                        return !StringUtils.isEmpty(item.getImgUrl());
                     }).collect(Collectors.toList());
 
                     //6.2)、sku的图片信息（pms_sku_images）
@@ -153,11 +158,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                     SkuFullReductionTo skuFullReductionTo = new SkuFullReductionTo();
                     BeanUtils.copyProperties(sku,skuFullReductionTo);
                     skuFullReductionTo.setSkuId(skuId);
-                    R r1 = couponFeignService.saveReduction(skuFullReductionTo);
-                    if(r1.getCode() != 0){
-                        log.error("远程保存sku优惠，满减信息失败");
+                    if(skuFullReductionTo.getFullCount() > 0 || skuFullReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+                        R r1 = couponFeignService.saveReduction(skuFullReductionTo);
+                        if(r1.getCode() != 0){
+                            log.error("远程保存sku优惠，满减信息失败");
+                        }
                     }
-
                 });
             }
 
