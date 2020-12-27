@@ -10,6 +10,8 @@ spring:
         server-addr: 39.102.58.201:8848
   application:
     name: gulimall-ware
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 mybatis-plus:
   global-config:
     db-config:

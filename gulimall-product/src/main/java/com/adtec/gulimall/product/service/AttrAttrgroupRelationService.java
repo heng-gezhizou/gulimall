@@ -1,5 +1,6 @@
 package com.adtec.gulimall.product.service;
 
+import com.adtec.gulimall.product.entity.ProductAttrValueEntity;
 import com.adtec.gulimall.product.vo.AttrRelationVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
@@ -22,5 +23,6 @@ public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRela
     void deleteRelation(AttrRelationVo[] attrRelationVos);
 
     void addAttrRelation(List<AttrRelationVo> attrRelationVos);
+
 }
 

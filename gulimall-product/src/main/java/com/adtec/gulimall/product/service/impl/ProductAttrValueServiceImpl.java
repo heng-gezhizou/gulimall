@@ -3,6 +3,7 @@ package com.adtec.gulimall.product.service.impl;
 import com.adtec.gulimall.product.entity.AttrEntity;
 import com.adtec.gulimall.product.service.AttrService;
 import com.adtec.gulimall.product.vo.savo.BaseAttrs;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +59,23 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
             this.saveBatch(collect);
         }
+    }
+
+    @Override
+    public List<ProductAttrValueEntity> queryListSpu(Long spuId) {
+        List<ProductAttrValueEntity> entities = this.baseMapper.selectList(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
+        return entities;
+    }
+
+    @Override
+    public void updateSpuInfo(Long spuId, List<ProductAttrValueEntity> attrList) {
+        this.baseMapper.delete(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id",spuId));
+
+        List<ProductAttrValueEntity> collect = attrList.stream().map(item -> {
+            item.setSpuId(spuId);
+            return item;
+        }).collect(Collectors.toList());
+        this.saveBatch(collect);
     }
 
 }

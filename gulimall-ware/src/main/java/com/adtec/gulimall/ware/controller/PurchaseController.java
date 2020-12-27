@@ -1,14 +1,13 @@
 package com.adtec.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.adtec.gulimall.ware.vo.MergeVo;
+import com.adtec.gulimall.ware.vo.PurchaseDoneVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.adtec.gulimall.ware.entity.PurchaseEntity;
 import com.adtec.gulimall.ware.service.PurchaseService;
@@ -29,6 +28,38 @@ import com.adtec.common.utils.R;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    ///ware/purchase/done
+    @PostMapping("/done")
+    public R done(@RequestBody PurchaseDoneVo vo){
+        purchaseService.done(vo);
+        return R.ok();
+    }
+
+//    /ware/purchase/received
+    @PostMapping("/received")
+    public R receivePurchase(@RequestBody List<Long> ids){
+        purchaseService.receivePurchase(ids);
+        return R.ok();
+    }
+
+//    /ware/purchase/merge
+    @PostMapping("/merge")
+    public R mergePurchase(@RequestBody MergeVo mergeVo){
+        purchaseService.merge(mergeVo);
+
+        return R.ok();
+    }
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/unreceive/list")
+    public R unreceiveList(@RequestParam Map<String, Object> params){
+        PageUtils page = purchaseService.queryUnreceivePage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表

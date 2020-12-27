@@ -1,5 +1,6 @@
 package com.adtec.gulimall.product.service.impl;
 
+import com.adtec.gulimall.product.entity.ProductAttrValueEntity;
 import com.adtec.gulimall.product.vo.AttrRelationVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

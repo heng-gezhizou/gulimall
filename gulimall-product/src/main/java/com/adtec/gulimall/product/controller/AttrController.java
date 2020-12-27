@@ -1,12 +1,15 @@
 package com.adtec.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.adtec.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.adtec.gulimall.product.entity.AttrGroupEntity;
+import com.adtec.gulimall.product.entity.ProductAttrValueEntity;
 import com.adtec.gulimall.product.service.AttrAttrgroupRelationService;
 import com.adtec.gulimall.product.service.AttrGroupService;
+import com.adtec.gulimall.product.service.ProductAttrValueService;
 import com.adtec.gulimall.product.vo.AttrEntityVO;
 import com.adtec.gulimall.product.vo.AttrRespVo;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +37,24 @@ public class AttrController {
     private AttrService attrService;
 
     @Autowired
+    private ProductAttrValueService productAttrValueService;
+
+    @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    ///product/attr/update/{spuId}
+    @PostMapping("/update/{spuId}")
+    public R updateSpuInfo(@PathVariable("spuId") Long spuId,@RequestBody List<ProductAttrValueEntity> attrList){
+        productAttrValueService.updateSpuInfo(spuId,attrList);
+        return R.ok();
+    }
+
+//    /product/attr/base/listforspu/{spuId}
+    @GetMapping("/base/listforspu/{spuId}")
+    public R queryListForSpu(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> list = productAttrValueService.queryListSpu(spuId);
+        return R.ok().put("data",list);
+    }
 
     @GetMapping("/{attrType}/list/{catelogId}")
     public R queryAttr(@RequestParam Map<String,Object> params,@PathVariable("catelogId") Long catelogId,

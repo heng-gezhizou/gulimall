@@ -36,7 +36,7 @@ spring:
         - id: route_ware
           uri: lb://gulimall-ware
           predicates:
-            - Path=/api/**
+            - Path=/api/ware/**
           filters:
             - RewritePath=/api/(?<segment>/?.*),/$\{segment}
 
