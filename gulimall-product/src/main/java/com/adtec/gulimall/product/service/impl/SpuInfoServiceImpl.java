@@ -191,4 +191,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     }
 
+    @Override
+    public void up(Long spuId) {
+
+    }
+
 }
