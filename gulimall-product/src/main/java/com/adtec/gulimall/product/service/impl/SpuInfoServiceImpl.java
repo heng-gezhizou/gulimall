@@ -2,6 +2,7 @@ package com.adtec.gulimall.product.service.impl;
 
 import com.adtec.common.to.SkuFullReductionTo;
 import com.adtec.common.to.SpuBoundTo;
+import com.adtec.common.to.es.SkuEsModel;
 import com.adtec.common.utils.R;
 import com.adtec.gulimall.product.entity.*;
 import com.adtec.gulimall.product.feign.CouponFeignService;
@@ -52,6 +53,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Resource
     private CouponFeignService couponFeignService;
+
+    @Resource
+    private BrandService brandService;
+
+    @Resource
+    private CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -191,8 +198,46 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     }
 
+    /**
+     * 商城上架
+     * @param spuId
+     */
     @Override
     public void up(Long spuId) {
+
+        List<SkuInfoEntity> skuInfoList = skuInfoService.getSkuInfoBySpuId(spuId);
+        skuInfoList.stream().map(sku->{
+            SkuEsModel skuEsModel = new SkuEsModel();
+
+            BeanUtils.copyProperties(sku,skuEsModel);
+
+            skuEsModel.setSkuPrice(sku.getPrice());
+            skuEsModel.setSkuImg(sku.getSkuDefaultImg());
+
+            // TODO 1、发送远程调用查询仓库库存
+//            库存
+//            private boolean hasStock;
+
+            // TODO 2、热点评分，写死为0
+//            评分
+//            private Long hotScore;
+
+            // TODO 3、查询品牌信息
+            BrandEntity brandEntity = brandService.getById(sku.getBrandId());
+            skuEsModel.setBrandName(brandEntity.getName());
+            skuEsModel.setBrandImg(brandEntity.getLogo());
+
+            //TODO 4、查询分类名称
+            CategoryEntity categoryEntity = categoryService.getById(sku.getCatalogId());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+//            private String catalogName;
+
+            //TODO 5、查询当前sku所有可以被检索的规格属性
+//            private List<Attr> attrs;
+
+
+            return skuEsModel;
+        }).collect(Collectors.toList());
 
     }
 
