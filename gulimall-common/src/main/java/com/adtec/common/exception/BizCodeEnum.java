@@ -3,6 +3,7 @@ package com.adtec.common.exception;
 public enum  BizCodeEnum {
     UNKNOWN_EXCEPTION(10000,"未知的系统异常"),
     VALID_EXCEPTION(10001,"参数校验异常"),
+    PRODUCT_UP_EXCEPTION(11001,"商品上架异常"),
     ;
     private int code;
     private String msg;
@@ -19,3 +20,4 @@ public enum  BizCodeEnum {
         return msg;
     }
 }
+

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
 import com.adtec.gulimall.product.entity.AttrEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,5 +30,12 @@ public interface AttrService extends IService<AttrEntity> {
 
     //获取未与当前分组关联的规格参数
     PageUtils getNoRelationAttr(Long attrgroupId, Map<String, Object> params);
+
+    /**
+     * 查询可被检索的attr
+     * @param attrIds
+     * @return
+     */
+    List<Long> querySearchAttr(List<Long> attrIds);
 }
 

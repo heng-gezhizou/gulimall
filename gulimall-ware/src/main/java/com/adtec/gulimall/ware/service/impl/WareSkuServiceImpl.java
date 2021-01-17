@@ -1,8 +1,13 @@
 package com.adtec.gulimall.ware.service.impl;
 
+import com.adtec.common.to.HasStockTo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -70,6 +75,19 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
     @Override
     public void updateStock(Long wareId, Long skuId, Integer skuNum) {
         wareSkuDao.updateStock(wareId,skuId,skuNum);
+    }
+
+    @Override
+    public List<HasStockTo> hasStock(List<Long> skuIds) {
+        List<HasStockTo> collect = skuIds.stream().map(skuId -> {
+            Long count = baseMapper.selectStock(skuId);
+            HasStockTo hasStockTo = new HasStockTo();
+            hasStockTo.setSkuId(skuId);
+            hasStockTo.setHasStock(count==null?false:count>0);
+            return hasStockTo;
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
 }
