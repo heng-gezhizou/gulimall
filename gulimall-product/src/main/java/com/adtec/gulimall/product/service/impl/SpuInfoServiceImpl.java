@@ -12,6 +12,7 @@ import com.adtec.gulimall.product.feign.SearchFeignService;
 import com.adtec.gulimall.product.feign.WareFeignService;
 import com.adtec.gulimall.product.service.*;
 import com.adtec.gulimall.product.vo.savo.*;
+import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
@@ -233,7 +234,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         HashSet<Long> idSet = new HashSet<>(searchAttrIds);
 
         List<SkuEsModel.Attr> attrList = attrEntities.stream().filter(item -> {
-            return idSet.contains(item);
+            return idSet.contains(item.getAttrId());
         }).map(item -> {
             SkuEsModel.Attr attr = new SkuEsModel.Attr();
             BeanUtils.copyProperties(item, attr);
@@ -243,13 +244,16 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         Map<Long, Boolean> stockMap = null;
         try{
             // TODO 1、发送远程调用查询仓库库存
-            R<List<HasStockTo>> hasStock = wareFeignService.hasStock(skuList);
-            stockMap = hasStock.getData().stream().collect(Collectors.toMap(HasStockTo::getSkuId, HasStockTo::getHasStock));
+            R r = wareFeignService.hasStock(skuList);
+            TypeReference<List<HasStockTo>> typeReference = new TypeReference<List<HasStockTo>>() {
+            };
+            stockMap = r.getData(typeReference).stream().collect(Collectors.toMap(HasStockTo::getSkuId, HasStockTo::getHasStock));
         }catch (Exception e){
             log.error("库存服务查询异常，原因{}",e);
         }
 
         Map<Long, Boolean> finalStockMap = stockMap;
+        //封装每个sku的信息
         List<SkuEsModel> collect = skuInfoList.stream().map(sku -> {
             SkuEsModel skuEsModel = new SkuEsModel();
 
