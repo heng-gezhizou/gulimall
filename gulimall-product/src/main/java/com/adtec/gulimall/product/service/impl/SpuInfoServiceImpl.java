@@ -220,8 +220,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         List<SkuInfoEntity> skuInfoList = skuInfoService.getSkuInfoBySpuId(spuId);
 
-        //获取sku集合
-        List<Long> skuList = skuInfoList.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+
 
         //TODO 5、查询当前sku所有可以被检索的规格属性
 //            private List<Attr> attrs;
@@ -243,6 +242,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         Map<Long, Boolean> stockMap = null;
         try{
+            //获取sku集合
+            List<Long> skuList = skuInfoList.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
             // TODO 1、发送远程调用查询仓库库存
             R r = wareFeignService.hasStock(skuList);
             TypeReference<List<HasStockTo>> typeReference = new TypeReference<List<HasStockTo>>() {

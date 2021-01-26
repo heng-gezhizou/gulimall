@@ -70,6 +70,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return listPath.toArray(new Long[listPath.size()]);
     }
 
+    @Override
+    public List<CategoryEntity> getLevel1Categorys() {
+        return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
+    }
+
     public List<Long> getParentPath(Long catelogId,List<Long> list){
         list.add(catelogId);
         CategoryEntity categoryEntity = baseMapper.selectById(catelogId);
