@@ -1,5 +1,6 @@
 package com.adtec.gulimall.product.service;
 
+import com.adtec.gulimall.product.vo.Catalog2Vo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.adtec.common.utils.PageUtils;
 import com.adtec.gulimall.product.entity.CategoryEntity;
@@ -27,5 +28,8 @@ public interface CategoryService extends IService<CategoryEntity> {
     Long[] getCatelogPathById(Long attrGroupId);
 
     List<CategoryEntity> getLevel1Categorys();
+
+    //获取分类
+    Map<String, List<Catalog2Vo>> getCatalog();
 }
 

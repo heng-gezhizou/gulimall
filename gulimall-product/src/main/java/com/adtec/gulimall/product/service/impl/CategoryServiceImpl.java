@@ -1,5 +1,6 @@
 package com.adtec.gulimall.product.service.impl;
 
+import com.adtec.gulimall.product.vo.Catalog2Vo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,6 +74,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
         return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
+    }
+
+    @Override
+    public Map<String, List<Catalog2Vo>> getCatalog() {
+        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+        Map<String, List<Catalog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(a -> a.getCatId().toString(), b -> {
+            //根据一级分类id获取该一级分类下的所有二级分类信息
+            List<CategoryEntity> catalog2List = baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", b.getCatId()));
+            List<Catalog2Vo> catalog2VoList = catalog2List.stream().map(l2 -> {
+                Catalog2Vo catalog2Vo = new Catalog2Vo(b.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                List<CategoryEntity> catalog3List = baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", l2.getCatId()));
+                List<Catalog2Vo.Catalog3Vo> catalog3VoList = catalog3List.stream().map(l3 -> {
+                    Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName().toString());
+                    return catalog3Vo;
+                }).collect(Collectors.toList());
+                catalog2Vo.setCatalog3List(catalog3VoList);
+                return catalog2Vo;
+            }).collect(Collectors.toList());
+            return catalog2VoList;
+        }));
+        return collect;
     }
 
     public List<Long> getParentPath(Long catelogId,List<Long> list){
