@@ -2,6 +2,7 @@ package com.adtec.gulimall.product.service.impl;
 
 import com.adtec.gulimall.product.vo.Catalog2Vo;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -121,13 +122,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     public Map<String, List<Catalog2Vo>> getCatalogFromDb() {
-        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+//        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+
+        /**
+         * 业务优化：减少查库次数，一次查询所有需要的数据，存入list中
+         */
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+
+//        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+        List<CategoryEntity> level1Categorys = getParent_cid(selectList,0L);
         Map<String, List<Catalog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(a -> a.getCatId().toString(), b -> {
             //根据一级分类id获取该一级分类下的所有二级分类信息
-            List<CategoryEntity> catalog2List = baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", b.getCatId()));
+            List<CategoryEntity> catalog2List = getParent_cid(selectList,b.getCatId());
             List<Catalog2Vo> catalog2VoList = catalog2List.stream().map(l2 -> {
                 Catalog2Vo catalog2Vo = new Catalog2Vo(b.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
-                List<CategoryEntity> catalog3List = baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", l2.getCatId()));
+                List<CategoryEntity> catalog3List = getParent_cid(selectList,l2.getCatId());
                 List<Catalog2Vo.Catalog3Vo> catalog3VoList = catalog3List.stream().map(l3 -> {
                     Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName().toString());
                     return catalog3Vo;
@@ -138,6 +147,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             return catalog2VoList;
         }));
         return collect;
+    }
+
+    private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList,Long parent_cid) {
+        return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", parent_cid));
     }
 
     public List<Long> getParentPath(Long catelogId,List<Long> list){

@@ -29,9 +29,11 @@ mybatis-plus:
       logic-delete-field: showStatus
   mapper-locations: classpath:/mapper/**/*.xml
   #mybatis-plus日志,在控制台打印sql语句
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #configuration:
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 server:
   port: 9999
-
+logging:
+  level:
+    com.adtec.gulimall.product: error
