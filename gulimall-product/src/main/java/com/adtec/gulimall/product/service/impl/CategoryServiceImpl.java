@@ -4,7 +4,10 @@ import com.adtec.gulimall.product.vo.Catalog2Vo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,9 @@ import javax.annotation.Resource;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -83,8 +89,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return listPath.toArray(new Long[listPath.size()]);
     }
 
+    @Cacheable({"category"})
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
+        System.out.println("执行了。。。");
         return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
     }
 
@@ -118,6 +126,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 //            redisTemplate.opsForValue().set("catalogJSON",toJSONString, 1,TimeUnit.DAYS);
             return catalogFromDb;
         }
+        System.out.println("缓存中有数据。。。。");
         //5、将从redis中查出的String转换为想要的格式（1,5这两个过程为：序列化与反序列化）
         Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
         return result;
@@ -136,39 +145,57 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
          * 业务优化：减少查库次数，一次查询所有需要的数据，存入list中
          */
         //本地代码块锁，springboot的所有组件都是单例模式的，同一个服务中只有一个对象
-        synchronized (this){
-            String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
-            if(!StringUtils.isEmpty(catalogJSON)){
-                Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
-                return result;
-            }
+//        synchronized (this){
+//            return getCategoryFromDbWithRedisson();
+//        }
+        /**
+         * 引入分布式锁
+         */
+        RLock lock = redissonClient.getLock("catelog-fromdb");
+        lock.lock();
+        Map<String, List<Catalog2Vo>> result = null;
+        try{
+            result =  getCategoryFromDbWithRedisson();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+        return result;
+    }
 
-            List<CategoryEntity> selectList = baseMapper.selectList(null);
-
-//        List<CategoryEntity> level1Categorys = getLevel1Categorys();
-            List<CategoryEntity> level1Categorys = getParent_cid(selectList,0L);
-            Map<String, List<Catalog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(a -> a.getCatId().toString(), b -> {
-                //根据一级分类id获取该一级分类下的所有二级分类信息
-                List<CategoryEntity> catalog2List = getParent_cid(selectList,b.getCatId());
-                List<Catalog2Vo> catalog2VoList = catalog2List.stream().map(l2 -> {
-                    Catalog2Vo catalog2Vo = new Catalog2Vo(b.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
-                    List<CategoryEntity> catalog3List = getParent_cid(selectList,l2.getCatId());
-                    List<Catalog2Vo.Catalog3Vo> catalog3VoList = catalog3List.stream().map(l3 -> {
-                        Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName().toString());
-                        return catalog3Vo;
-                    }).collect(Collectors.toList());
-                    catalog2Vo.setCatalog3List(catalog3VoList);
-                    return catalog2Vo;
-                }).collect(Collectors.toList());
-                return catalog2VoList;
-            }));
-            System.out.println("查询了数据库......");
-            String toJSONString = JSON.toJSONString(collect);
-            //4、将toJSONString存入redis
-            redisTemplate.opsForValue().set("catalogJSON",toJSONString, 1,TimeUnit.DAYS);
-            return collect;
+    private Map<String, List<Catalog2Vo>> getCategoryFromDbWithRedisson() {
+        String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
+        if(!StringUtils.isEmpty(catalogJSON)){
+            Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
+            return result;
         }
 
+        System.out.println("查询了数据库......");
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+
+//        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+        List<CategoryEntity> level1Categorys = getParent_cid(selectList,0L);
+        Map<String, List<Catalog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(a -> a.getCatId().toString(), b -> {
+            //根据一级分类id获取该一级分类下的所有二级分类信息
+            List<CategoryEntity> catalog2List = getParent_cid(selectList,b.getCatId());
+            List<Catalog2Vo> catalog2VoList = catalog2List.stream().map(l2 -> {
+                Catalog2Vo catalog2Vo = new Catalog2Vo(b.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                List<CategoryEntity> catalog3List = getParent_cid(selectList,l2.getCatId());
+                List<Catalog2Vo.Catalog3Vo> catalog3VoList = catalog3List.stream().map(l3 -> {
+                    Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName().toString());
+                    return catalog3Vo;
+                }).collect(Collectors.toList());
+                catalog2Vo.setCatalog3List(catalog3VoList);
+                return catalog2Vo;
+            }).collect(Collectors.toList());
+            return catalog2VoList;
+        }));
+
+        String toJSONString = JSON.toJSONString(collect);
+        //4、将toJSONString存入redis
+        redisTemplate.opsForValue().set("catalogJSON",toJSONString, 1, TimeUnit.DAYS);
+        return collect;
     }
 
     private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList,Long parent_cid) {

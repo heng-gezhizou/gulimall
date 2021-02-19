@@ -7,6 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.redisson.Redisson;
+import org.redisson.RedissonLock;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.UUID;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -33,10 +38,21 @@ public class GulimallProductApplicationTests {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private RedissonClient redisson;
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Test
+    public void testRedisson(){
+        System.out.println(redissonClient);
+    }
+
     @Test
     public void testRedisTemplate(){
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        ops.set("Hello","World");
+        ops.set("Hello","World_"+ UUID.randomUUID().toString());
         String hello = ops.get("Hello");
         System.out.println("Hello" + hello);
     }
