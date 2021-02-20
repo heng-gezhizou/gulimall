@@ -89,7 +89,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return listPath.toArray(new Long[listPath.size()]);
     }
 
-    @Cacheable({"category"})
+    @Cacheable(value = {"category"},key = "#root.method.name")
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
         System.out.println("执行了。。。");

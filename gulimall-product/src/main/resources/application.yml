@@ -22,6 +22,11 @@ spring:
     port: 6379
   cache:
     type: redis
+    redis:
+      time-to-live: 3600000
+      key-prefix: CACHE_
+      cache-null-values: true
+      use-key-prefix: true
 #  redis:
 #    host: 39.106.63.189
 #    port: 6379
