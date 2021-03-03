@@ -15,6 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class MyCacheConfig {
 
+    //此处代码由org.springframework.boot.autoconfigure.cache包下的RedisCacheConfiguration修改
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties){
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();

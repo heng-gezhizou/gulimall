@@ -42,6 +42,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * （3）在业务方法的头部标上@Cacheable，加上该注解后，表示当前方法需要将进行缓存，如果缓存中有，方法无效调用，如果缓存中没有，则会调用方法，最后将方法的结果放入到缓存中。
  * （4）指定缓存分区。每一个需要缓存的数据，我们都需要来指定要放到哪个名字的缓存中。通常按照业务类型进行划分。
  *
+ * Spring-cache总结：
+ *   常规数据（读多写少，即时性，数据一致性要求不高）；完全可以使用Spring-cache;写模式，设置过期时间即可
+ *   特殊数据（即时性，数据一致性要求高）；自己写逻辑，加锁。
  */
 @EnableCaching
 @EnableFeignClients(basePackages = "com.adtec.gulimall.product.feign")

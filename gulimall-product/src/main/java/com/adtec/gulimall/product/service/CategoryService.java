@@ -31,5 +31,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     //获取分类
     Map<String, List<Catalog2Vo>> getCatalog();
+
+    void updateCategory(CategoryEntity category);
 }
 

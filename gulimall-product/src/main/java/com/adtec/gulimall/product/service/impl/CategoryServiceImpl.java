@@ -7,6 +7,7 @@ import com.alibaba.fastjson.TypeReference;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -106,8 +107,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 补充：lettuce，jedis是操作redis的底层，Spring在其基础上封装了RedisTemplate。
      *
      */
+    @Cacheable(value = {"category"},key = "'catalogJSON'")
     @Override
     public Map<String, List<Catalog2Vo>> getCatalog() {
+        System.out.println("测试");
         /**
          * 1、空结果缓存：解决缓存穿透
          * 2、设置不过期时间（随机值）：解决缓存雪崩
@@ -131,6 +134,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
         return result;
 
+    }
+
+    @CacheEvict(value = "category",allEntries = true)
+    @Override
+    public void updateCategory(CategoryEntity category) {
+        System.out.println("更新啦");
+        this.updateById(category);
     }
 
     public Map<String, List<Catalog2Vo>> getCatalogFromDb() {
@@ -165,6 +175,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     private Map<String, List<Catalog2Vo>> getCategoryFromDbWithRedisson() {
+        System.out.println("查询了数据库......");
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+
+//        List<CategoryEntity> level1Categorys = getLevel1Categorys();
+        List<CategoryEntity> level1Categorys = getParent_cid(selectList,0L);
+        Map<String, List<Catalog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(a -> a.getCatId().toString(), b -> {
+            //根据一级分类id获取该一级分类下的所有二级分类信息
+            List<CategoryEntity> catalog2List = getParent_cid(selectList,b.getCatId());
+            List<Catalog2Vo> catalog2VoList = catalog2List.stream().map(l2 -> {
+                Catalog2Vo catalog2Vo = new Catalog2Vo(b.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                List<CategoryEntity> catalog3List = getParent_cid(selectList,l2.getCatId());
+                List<Catalog2Vo.Catalog3Vo> catalog3VoList = catalog3List.stream().map(l3 -> {
+                    Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName().toString());
+                    return catalog3Vo;
+                }).collect(Collectors.toList());
+                catalog2Vo.setCatalog3List(catalog3VoList);
+                return catalog2Vo;
+            }).collect(Collectors.toList());
+            return catalog2VoList;
+        }));
+        return collect;
+    }
+
+    private Map<String, List<Catalog2Vo>> getCategoryFromDbWithRedisson1() {
         String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
         if(!StringUtils.isEmpty(catalogJSON)){
             Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
